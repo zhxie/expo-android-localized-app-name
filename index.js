@@ -22,9 +22,15 @@ function withAndroidLocalizedName(config) {
                         resources.push({ string: { $: { name: key }, _: strings[key] } });
                 }
                 if (resources.length) {
-                    await fs.promises.mkdir(path.resolve(resPath, `values-${locale}`), { recursive: true });
+                    let finalLocale = locale;
+                    if (finalLocale.includes("-")) {
+                        finalLocale = `b+${finalLocale.replaceAll("-", "+")}`;
+                    }
+                    await fs.promises.mkdir(path.resolve(resPath, `values-${finalLocale}`), {
+                        recursive: true,
+                    });
                     await fs.promises.writeFile(
-                        path.resolve(resPath, `values-${locale}`, 'strings.xml'),
+                        path.resolve(resPath, `values-${finalLocale}`, 'strings.xml'),
                         builder.buildObject({ resources })
                     );
                 }
